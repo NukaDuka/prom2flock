@@ -1,0 +1,84 @@
+{
+	"info": {
+		"_postman_id": "5619ed7e-7935-4620-9597-91e161877ac5",
+		"name": "prom2flock",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "prom2flock_test_1",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"strictSSL": false,
+				"followOriginalHttpMethod": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"version\": \"4\",\r\n  \"alerts\": [\r\n    {\r\n      \"status\": \"firing\",\r\n      \"labels\": {\r\n          \"alertname\": \"InstanceDown\",\r\n          \"teamname\": \"SRE\"\r\n      },\r\n      \"annotations\": {\r\n          \"description\": \"Instance is down\",\r\n          \"format\": \"[{{alertname}}] [Team: {{teamname}}] {{description}}\",\r\n          \"receiver\": \"alwefewft\"\r\n      }\r\n    },\r\n    {\r\n      \"status\": \"resolved\",\r\n      \"labels\": {\r\n          \"alertname\": \"InstanceDown\",\r\n          \"teamname\": \"SRE\"\r\n      },\r\n      \"annotations\": {\r\n          \"description\": \"Instance is down\",\r\n          \"format\": \"[{{alertname}}] [Team: {{teamname}}] {{description}}\",\r\n          \"receiver\": \"alt\"\r\n      }\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:5009",
+					"host": [
+						"localhost"
+					],
+					"port": "5009"
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "prom2flock_test_healthcheck",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:5009/healthz",
+					"host": [
+						"localhost"
+					],
+					"port": "5009",
+					"path": [
+						"healthz"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "prom2flock_test_reloadconfig",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:5009/reload",
+					"host": [
+						"localhost"
+					],
+					"port": "5009",
+					"path": [
+						"reload"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

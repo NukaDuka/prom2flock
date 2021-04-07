@@ -1,0 +1,22 @@
+# Initial default config file, edit as required
+# To avoid undesired behavior from prom2flock, ensure that flock.default.webhook_link is a valid link
+server:
+  port: 5009
+  host: 0.0.0.0
+  debug: true
+  logging:
+    logger_retention_time: 30
+    error_logger_retention_time: 30
+    access_logger_retention_time: 90
+    verbosity: DEBUG
+  timeout: 10
+  retries: 3
+
+flock:
+    default:
+      webhook_link: <link> # Replace with default flock webhook link
+      alert_format: "<b>[{{alertname}}]</b> {{description}}"
+      resolve_format: "<b>[RESOLVED] [{{alertname}}]</b>"
+    webhooks: # Add webhook links here as needed
+      # Format:
+      # webhook_name: webhook_link  

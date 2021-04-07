@@ -1,0 +1,6 @@
+{
+    "pythonVersion": "3.8",
+    "pythonPlatform": "Linux",
+    "venvPath": "./env",
+    "venv": "env",
+}

@@ -1,0 +1,19 @@
+server:
+  port: 5009
+  host: 0.0.0.0
+  debug: true
+  logging:
+    logger_retention_time: 30
+    error_logger_retention_time: 30
+    access_logger_retention_time: 90
+    verbosity: DEBUG
+  timeout: 10
+  retries: 3
+
+flock:
+    default:
+      webhook_link: https://api.flock.com/hooks/sendMessage/<redacted>
+      alert_format: "<b>[{{alertname}}]</b> {{description}}"
+      resolve_format: "<b>[RESOLVED] [{{alertname}}]</b>"
+    webhooks:
+      alt: https://api.flock.com/hooks/sendMessage/<redacted>

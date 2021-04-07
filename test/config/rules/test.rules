@@ -1,0 +1,22 @@
+groups:
+    - name: test
+      rules:
+        - alert: InstanceDown
+          expr: up{instance="dummy2:9100"} == 0
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            alert_format: "<b>[!{alertname}] [Job: !{job}]</b> !{description}: !{instance} [<a href=\"!{generatorURL}\">Link</a>]"
+            resolve_format: "<b>[RESOLVED] [!{alertname}] [Job: !{job}]</b> [<a href=\"!{generatorURL}\">Link</a>]"
+            description: "The following CRITICAL instance is down"
+
+        - alert: InstanceDown
+          expr: up{instance!="dummy2:9100"} == 0
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            alert_format: "<b>[!{alertname}] [Job: !{job}]</b> !{description}: !{instance} [<a href=\"!{generatorURL}\">Link</a>]"
+            resolve_format: "<b>[RESOLVED] [!{alertname}] [Job: !{job}]</b> [<a href=\"!{generatorURL}\">Link</a>]"
+            description: "The following instance is down"

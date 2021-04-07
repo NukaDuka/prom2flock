@@ -1,0 +1,2 @@
+#!/bin/sh
+../env/bin/gunicorn -c ./gunicorn.conf.py wsgi:app

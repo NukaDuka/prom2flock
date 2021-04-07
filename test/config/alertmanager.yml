@@ -1,0 +1,22 @@
+route:
+  receiver: main
+  group_by: ['...']
+  repeat_interval: 1m
+  routes:
+    - receiver: r1
+      match:
+        severity: critical
+    - receiver: r2
+      match:
+        severity: test
+
+receivers:
+  - name: main
+    webhook_configs:
+      - url: http://prom2flock:5009
+  - name: r1
+    webhook_configs:
+      - url: http://prom2flock:5009
+  - name: r2
+    webhook_configs:
+      - url: http://prom2flock:5009

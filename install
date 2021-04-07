@@ -1,0 +1,59 @@
+#!/bin/bash
+# This script installs prom2flock as a systemd service
+
+set +x
+
+# Ensure we're in the right directory
+cd "$(readlink -f $0 | rev | cut -d/ -f2- | rev)"
+
+if [ "$(which curl)" == "" ]; then echo "ERROR: prom2flock requires cURL to function properly."
+# Create user and group
+sudo adduser prom2flock --system --no-create-home || true
+sudo groupadd -f prom2flock
+sudo usermod -aG prom2flock prom2flock
+
+sudo mkdir -p /opt/prom2flock
+sudo cp -r ./src /opt/prom2flock/
+sudo cp ./requirements.txt /opt/prom2flock/requirements.txt
+sudo chown -R prom2flock /opt/prom2flock
+sudo chgrp -R prom2flock /opt/prom2flock
+
+# Create environment
+sudo -u prom2flock python3 -m venv /opt/prom2flock/env
+if [ $? -ne 0 ]; then echo "ERROR: Installation failed, please ensure that python3, python3-venv and python3-pip are installed"; exit 254; fi
+sudo -u prom2flock ln -s /opt/prom2flock/env/bin/gunicorn /opt/prom2flock/src/gunicorn
+# Install packages
+
+sudo -u prom2flock -- bash -c "source /opt/prom2flock/env/bin/activate; /opt/prom2flock/env/bin/pip install -r /opt/prom2flock/requirements.txt; deactivate"
+
+
+
+sudo mkdir -p /var/log/prom2flock
+sudo mkdir -p /var/log/prom2flock/log
+sudo mkdir -p /var/log/prom2flock/error
+sudo mkdir -p /var/log/prom2flock/access
+
+sudo chown -R prom2flock /var/log/prom2flock
+sudo chgrp -R prom2flock /var/log/prom2flock 
+
+sudo mkdir -p /etc/prom2flock
+
+sudo chown -R prom2flock /etc/prom2flock
+sudo chgrp -R prom2flock /etc/prom2flock
+sudo chmod -R 755 /etc/prom2flock
+
+sudo mkdir -p /var/run/prom2flock
+
+sudo chown -R prom2flock /var/run/prom2flock
+sudo chgrp -R prom2flock /var/run/prom2flock 
+
+sudo cp ./setup/config.yaml /tmp/prom2flock_tmp.yaml
+sudo nano /tmp/prom2flock_tmp.yaml
+sudo mv /tmp/prom2flock_tmp.yaml /etc/prom2flock/config.yaml
+
+sudo cp  ./setup/prom2flock.service /etc/systemd/system/prom2flock.service
+sudo systemctl start prom2flock.service
+
+echo "Installation complete"
+
+set -x

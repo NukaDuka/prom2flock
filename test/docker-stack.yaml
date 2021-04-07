@@ -1,0 +1,86 @@
+version: "3.8"
+services:
+  prometheus:
+    image: prom/prometheus
+    dns: 8.8.8.8
+    ports:
+      - "9090:9090"
+    networks:
+      monitoring-overlay:
+        aliases:
+          - prometheus
+    stop_grace_period: 1m
+    volumes:
+      - "prometheus-data:/data"
+      - "./config/prometheus.yml:/etc/prometheus/prometheus.yml"
+      - "./config/rules:/etc/prometheus/rules"
+      - "/var/run/docker.sock:/var/run/docker.sock:rw"
+  
+  alertmanager:
+    image: prom/alertmanager
+    dns: 8.8.8.8
+    ports:
+      - "9093:9093"
+    networks:
+      monitoring-overlay:
+        aliases:
+          - alertmanager
+    stop_grace_period: 1m
+    volumes:
+      - "alertmanager-data:/data"
+      - "./config/alertmanager.yml:/etc/alertmanager/alertmanager.yml"
+      
+      
+  prom2flock:
+    image: prom2flock:test
+    dns: 8.8.8.8
+    ports:
+      - "5009:5009"
+    networks:
+      monitoring-overlay:
+        aliases:
+          - prom2flock
+    stop_grace_period: 1m
+
+  dummy1:
+    image: prom/node-exporter
+    dns: 8.8.8.8
+    ports:
+      - "9101:9100"
+    networks:
+      monitoring-overlay:
+        aliases:
+          - dummy1
+    stop_grace_period: 1m
+  
+  dummy2:
+    image: prom/node-exporter
+    dns: 8.8.8.8
+    ports:
+      - "9102:9100"
+    networks:
+      monitoring-overlay:
+        aliases:
+          - dummy2
+    stop_grace_period: 1m
+  
+  dummy3:
+    image: prom/node-exporter
+    dns: 8.8.8.8
+    ports:
+      - "9103:9100"
+    networks:
+      monitoring-overlay:
+        aliases:
+          - dummy3
+    stop_grace_period: 1m
+
+volumes:
+  prometheus-data: 
+    external: true
+  alertmanager-data: 
+    external: true
+
+networks:
+  monitoring-overlay:
+    external: true
