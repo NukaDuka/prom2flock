@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name = 'prom2flock',
-    version = '0.1.0',
+    version = '0.1.1',
     author = "Kartik Gokte",
     author_email = "ksgokte@gmail.com",
     description = "A web service that processes and routes Alertmanager alerts to any Flock channel",
