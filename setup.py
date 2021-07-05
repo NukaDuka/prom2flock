@@ -11,7 +11,6 @@ setup(
     package_dir={"": "src"},
     packages = ['prom2flock'],
     install_requires = [
-        "setuptools==54.2.0",
         "Flask==1.1.2",
         "gunicorn==20.1.0",
         "requests==2.25.1",
