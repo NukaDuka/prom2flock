@@ -12,7 +12,7 @@ setup(
     packages = ['prom2flock'],
     install_requires = [
         "Flask==1.1.2",
-        "gunicorn==20.1.0",
+        "gunicorn==20.0.4",
         "requests==2.25.1",
     ]
 )
