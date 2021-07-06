@@ -8,7 +8,7 @@ if __name__ == "__main__":
     # Import environment from os
     os_env = os.environ.copy()
     # Check if gunicorn exists
-    output = subprocess.run(['which', 'gunicorn'], env=os_env)
+    output = subprocess.run(['gunicorn', '-v'], env=os_env)
     if output.returncode != 0:
         logging.error('Gunicorn cannot be found in $PATH, exiting')
         sys.exit(1)
