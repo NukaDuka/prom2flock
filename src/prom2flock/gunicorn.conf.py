@@ -1,6 +1,6 @@
 import yaml
 import sys, errno
-
+import os
 reload = False
 errorlog = '-'
 accesslog = '-'
@@ -10,15 +10,18 @@ pidfile = '/var/run/prom2flock/prom2flock.pid'
 def on_starting(server):
     # check if config file exists and is readable
     server.log.info('Checking config file')
-    try:
-        with open('/etc/prom2flock/config.yaml', 'r') as f:
-            f.readline()
-    except:
-        server.log.error('Config file does not exist or is not accessible')
-        sys.exit(errno.EINTR)
+    if os.environ.get('CONFIG_FILE_LOCATION') is None:
+        server.log.error('CONFIG_FILE environment variable not found, exiting')
+        sys.exit(errno.ENOENT)
+
+    CONFIG_FILE = os.environ.get('CONFIG_FILE_LOCATION')
+    if not os.path.isfile(CONFIG_FILE):
+        server.log.error(CONFIG_FILE + ' is unreadable or does not exist, exiting')
+        sys.exit(errno.ENOENT)
 
 try:
-    with open('/etc/prom2flock/config.yaml', 'r') as f:
+    CONFIG_FILE = os.environ.get('CONFIG_FILE_LOCATION')
+    with open(CONFIG_FILE, 'r') as f:
         config_file = yaml.safe_load(f)
         bind = config_file['server']['host'] + ':' + str(config_file['server']['port'])
         reload = config_file['server']['debug']
