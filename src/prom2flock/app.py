@@ -5,12 +5,23 @@ import logging.handlers
 import json
 import re
 import requests
+import os
 
 app = Flask(__name__)
 
+if os.environ.get('CONFIG_FILE') is None:
+    logging.basicConfig(format='%(asctime)s [%(funcName)s (%(name)s)]  %(levelname)s: %(message)s', level=logging.DEBUG)
+    logging.error('CONFIG_FILE environment variable not found, exiting')
+    exit(1)
+
+CONFIG_FILE = os.environ.get('CONFIG_FILE')
+if not os.path.isfile(CONFIG_FILE):
+    logging.basicConfig(format='%(asctime)s [%(funcName)s (%(name)s)]  %(levelname)s: %(message)s', level=logging.DEBUG)
+    logging.error('CONFIG_FILE is unreadable or does not exist, exiting')
+    exit(1)
 
 # Load initial configuration
-with open('/etc/prom2flock/config.yaml', 'r') as f:
+with open(CONFIG_FILE, 'r') as f:
     try:
         config = yaml.safe_load(f)
         app.config['SERVER_PORT'] = config['server']['port']
@@ -149,7 +160,6 @@ def main():
 @app.route('/reload')
 def reload():
     logger.info('Starting config reload')
-    CONFIG_PATH = '/etc/prom2flock/config.yaml'
     # Save old config in case of rollback
     old_config = {}
     old_config['LOGGER_VERBOSITY'] = app.config['LOGGER_VERBOSITY']
@@ -157,7 +167,7 @@ def reload():
     old_config['TIMEOUT'] = app.config['TIMEOUT']
     old_config['RETRIES'] = app.config['RETRIES']
 
-    with open(CONFIG_PATH, 'r') as f:
+    with open(CONFIG_FILE, 'r') as f:
         try:
             config = yaml.safe_load(f)
             app.config['LOGGER_VERBOSITY'] = config['server']['logging']['verbosity']

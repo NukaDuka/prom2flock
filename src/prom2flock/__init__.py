@@ -2,11 +2,21 @@ import subprocess
 import logging
 import sys
 import os
+import argparse
 
 if __name__ == "__main__":
+    # Get and parse command line arguments
+    argparser = argparse.ArgumentParser(description='A web service that processes and routes alertmanager alerts to Flock')
+    argparser.add_argument('-c', '--config', default='/etc/prom2flock/config.yaml', help='prom2flock config file location')
+    args = argparser.parse_args()
+
+    config_file_location = args.config
+
     logging.basicConfig(format='%(asctime)s [%(funcName)s (%(name)s)]  %(levelname)s: %(message)s', level=logging.DEBUG)
     # Import environment from os
     os_env = os.environ.copy()
+    os_env['CONFIG_FILE'] = config_file_location
+
     # Check if gunicorn exists
     output = subprocess.run(['gunicorn', '-v'], env=os_env)
     if output.returncode != 0:
