@@ -9,15 +9,15 @@ import os
 
 app = Flask(__name__)
 
-if os.environ.get('CONFIG_FILE') is None:
+if os.environ.get('CONFIG_FILE_LOCATION') is None:
     logging.basicConfig(format='%(asctime)s [%(funcName)s (%(name)s)]  %(levelname)s: %(message)s', level=logging.DEBUG)
     logging.error('CONFIG_FILE environment variable not found, exiting')
     exit(1)
 
-CONFIG_FILE = os.environ.get('CONFIG_FILE')
+CONFIG_FILE = os.environ.get('CONFIG_FILE_LOCATION')
 if not os.path.isfile(CONFIG_FILE):
     logging.basicConfig(format='%(asctime)s [%(funcName)s (%(name)s)]  %(levelname)s: %(message)s', level=logging.DEBUG)
-    logging.error('CONFIG_FILE is unreadable or does not exist, exiting')
+    logging.error(CONFIG_FILE + ' is unreadable or does not exist, exiting')
     exit(1)
 
 # Load initial configuration

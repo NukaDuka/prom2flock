@@ -15,7 +15,7 @@ if __name__ == "__main__":
     logging.basicConfig(format='%(asctime)s [%(funcName)s (%(name)s)]  %(levelname)s: %(message)s', level=logging.DEBUG)
     # Import environment from os
     os_env = os.environ.copy()
-    os_env['CONFIG_FILE'] = config_file_location
+    os_env['CONFIG_FILE_LOCATION'] = config_file_location
 
     # Check if gunicorn exists
     output = subprocess.run(['gunicorn', '-v'], env=os_env)
