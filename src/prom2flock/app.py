@@ -26,7 +26,6 @@ with open(CONFIG_FILE, 'r') as f:
         config = yaml.safe_load(f)
         app.config['SERVER_PORT'] = config['server']['port']
         app.config['SERVER_HOST']  = config['server']['host']
-        app.config['SERVER_DEBUG']  = config['server']['debug']
         app.config['LOGGER_RETENTION'] = config['server']['logging']['logger_retention_time']
         app.config['ERROR_LOGGER_RETENTION'] = config['server']['logging']['error_logger_retention_time']
         app.config['ACCESS_LOGGER_RETENTION'] = config['server']['logging']['access_logger_retention_time']
@@ -194,4 +193,4 @@ def reload():
     return 'OK'
 # For testing
 if __name__ == "__main__":
-    app.run(port=app.config['SERVER_PORT'], host=app.config['SERVER_HOST'], debug=app.config['SERVER_DEBUG'])
+    app.run(port=app.config['SERVER_PORT'], host=app.config['SERVER_HOST'])
