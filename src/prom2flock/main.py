@@ -7,7 +7,7 @@ import argparse
 from gunicorn.app.wsgiapp import run
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
-print(os.getcwd())
+print(os.getcwd())	
 
 from gunicorn_conf import __file__ as gunicorn_conf_file
 

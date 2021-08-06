@@ -40,3 +40,6 @@ except:
 
 timeout = 0
 keepalive = 10
+
+if __name__ == "__main__":
+	print('gunicorn config file')
