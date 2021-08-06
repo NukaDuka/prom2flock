@@ -26,7 +26,7 @@ def main():
 
 
     # This argv will be passed along to gunicorn
-    sys.argv = [sys.argv[0], '-c', gunicorn_conf.__file__, 'wsgi:app']
+    sys.argv = [sys.argv[0], '-c', gunicorn_conf.__file__, 'prom2flock.wsgi:app']
 
     # Run gunicorn and pass along exit code
     sys.exit(run())
