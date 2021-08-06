@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name = 'prom2flock',
-    version = '0.4.0',
+    version = '0.4.1',
     author = "Kartik Gokte",
     author_email = "ksgokte@gmail.com",
     description = "A web service that processes and routes Alertmanager alerts to any Flock channel",
@@ -10,10 +10,10 @@ setup(
     python_requires="~=3.8",
     package_dir={"": "src"},
     packages = ['prom2flock'],
-    #scripts = ['src/prom2flock/__init__.py'],
+    #scripts = ['src/main.py'],
     entry_points = {
         'console_scripts' : [
-            'prom2flock = prom2flock:main [Flask, gunicorn, requests, PyYAML]'
+	        'prom2flock = prom2flock:main [Flask, gunicorn, requests, PyYAML]'
         ]
     },
     install_requires = [
