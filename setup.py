@@ -20,6 +20,8 @@ setup(
         "Flask==1.1.2",
         "gunicorn==20.0.4",
         "requests==2.25.1",
-        "PyYAML==5.4.1"
+        "PyYAML==5.4.1",
+#		"gevent==21.8.0"
+
     ]
 )

@@ -5,6 +5,9 @@ reload = False
 errorlog = '-'
 accesslog = '-'
 
+workers = 0 # temporarily
+#worker_class = 'gevent'
+
 loglevel = 'debug'
 pidfile = '/var/run/prom2flock/prom2flock.pid'
 
