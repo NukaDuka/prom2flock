@@ -13,7 +13,7 @@ setup(
     #scripts = ['src/main.py'],
     entry_points = {
         'console_scripts' : [
-	        'prom2flock = prom2flock:main [Flask, gunicorn, requests, PyYAML]'
+	        'prom2flock = prom2flock:main:main [Flask, gunicorn, requests, PyYAML]'
         ]
     },
     install_requires = [
