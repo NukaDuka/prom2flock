@@ -5,6 +5,7 @@ reload = False
 errorlog = '-'
 accesslog = '-'
 
+loglevel = 'debug'
 pidfile = '/var/run/prom2flock/prom2flock.pid'
 
 def on_starting(server):
