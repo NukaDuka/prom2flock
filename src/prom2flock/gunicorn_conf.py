@@ -5,10 +5,6 @@ reload = False
 errorlog = '-'
 accesslog = '-'
 
-workers = 0 # temporarily
-#worker_class = 'gevent'
-
-loglevel = 'debug'
 pidfile = '/var/run/prom2flock/prom2flock.pid'
 
 def on_starting(server):
@@ -30,20 +26,22 @@ try:
         bind = config_file['server']['host'] + ':' + str(config_file['server']['port'])
         reload = config_file['server']['debug']
         port = config_file['server']['port']
-except:
-    # This shouldn't matter since the on_starting hook will (hopefully) stop the server before ever reaching here
-    bind = '0.0.0.0:5009'
-    port = 5009
-    reload = False
+        workers = config_file['server']['workers']
+        loglevel = config_file['server']['logging']['verbosity']
+
+except Exception as e:
+    print('ERROR: config file invalid, more information below')
+    print(e)
+    sys.exit(errno.ENOENT)
 
 try:
     with open('/var/run/prom2flock/prom2flock.port', 'w') as f:
         f.write(str(port))
 except:
-    print('Can not open /var/run/prom2flock')
+    print('ERROR: Can not open /var/run/prom2flock')
 
 timeout = 0
 keepalive = 10
 
 if __name__ == "__main__":
-	print('gunicorn config file')
+    print('gunicorn config file')

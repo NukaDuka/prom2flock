@@ -13,7 +13,7 @@ sudo groupadd -f prom2flock
 sudo usermod -aG prom2flock prom2flock
 
 sudo mkdir -p /opt/prom2flock
-sudo cp -r ./src /opt/prom2flock/
+sudo cp -r ./src/prom2flock /opt/prom2flock/
 sudo cp ./requirements.txt /opt/prom2flock/requirements.txt
 sudo chown -R prom2flock /opt/prom2flock
 sudo chgrp -R prom2flock /opt/prom2flock
@@ -34,7 +34,7 @@ sudo mkdir -p /var/log/prom2flock/error
 sudo mkdir -p /var/log/prom2flock/access
 
 sudo chown -R prom2flock /var/log/prom2flock
-sudo chgrp -R prom2flock /var/log/prom2flock 
+sudo chgrp -R prom2flock /var/log/prom2flock
 
 sudo mkdir -p /etc/prom2flock
 
@@ -45,7 +45,7 @@ sudo chmod -R 755 /etc/prom2flock
 sudo mkdir -p /var/run/prom2flock
 
 sudo chown -R prom2flock /var/run/prom2flock
-sudo chgrp -R prom2flock /var/run/prom2flock 
+sudo chgrp -R prom2flock /var/run/prom2flock
 
 sudo cp ./setup/config.yaml /tmp/prom2flock_tmp.yaml
 sudo nano /tmp/prom2flock_tmp.yaml
