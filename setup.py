@@ -10,7 +10,7 @@ setup(
     python_requires="~=3.8",
     package_dir={"": "src"},
     packages = ['prom2flock'],
-    #scripts = ['src/main.py'],
+    #scripts = ['src/scripts/prom2flock'],
     entry_points = {
         'console_scripts' : [
 	        'prom2flock = prom2flock.main:main [Flask, gunicorn, requests, PyYAML]'
@@ -21,7 +21,5 @@ setup(
         "gunicorn==20.0.4",
         "requests==2.25.1",
         "PyYAML==5.4.1",
-#		"gevent==21.8.0"
-
     ]
 )
