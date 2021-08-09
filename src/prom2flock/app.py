@@ -39,8 +39,8 @@ with open(CONFIG_FILE, 'r') as f:
         try:
             default_receiver = app.config['FLOCK_CONFIG']['default']['webhook_link']
             default_format = app.config['FLOCK_CONFIG']['default']['alert_format']
-            if default_format.find('!{description}}') == -1:
-                logging.error('Alert format requires the following field: "!\{description\}"')
+            if default_format.find('!{description}') == -1:
+                logging.error('Alert format requires the following field: "!{description}"')
                 raise ImportError
 
         except:
@@ -178,7 +178,7 @@ def reload():
             # Test existance of flock config
             default_receiver = app.config['FLOCK_CONFIG']['default']['webhook_link']
             default_format = app.config['FLOCK_CONFIG']['default']['alert_format']
-            if default_format.find('!{description}}') == -1:
+            if default_format.find('!{description}') == -1:
                 raise ImportError
             log_handler.setLevel(app.config['LOGGER_VERBOSITY'])
         except Exception as exc:
