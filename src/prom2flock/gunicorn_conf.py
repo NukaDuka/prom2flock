@@ -31,8 +31,7 @@ try:
 
 except Exception as e:
     print('ERROR: config file invalid, more information below')
-    print(e.with_traceback())
-    sys.exit(errno.ENOENT)
+    raise
 
 try:
     with open('/var/run/prom2flock/prom2flock.port', 'w') as f:
