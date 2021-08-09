@@ -31,7 +31,7 @@ try:
 
 except Exception as e:
     print('ERROR: config file invalid, more information below')
-    print(e)
+    print(e.with_traceback())
     sys.exit(errno.ENOENT)
 
 try:
