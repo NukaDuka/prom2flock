@@ -22,6 +22,7 @@ if not os.path.isfile(CONFIG_FILE):
 
 # Load initial configuration
 with open(CONFIG_FILE, 'r') as f:
+    logging.basicConfig(format='%(asctime)s [%(funcName)s (%(name)s)]  %(levelname)s: %(message)s', level=logging.DEBUG)
     try:
         config = yaml.safe_load(f)
         app.config['SERVER_PORT'] = config['server']['port']
@@ -38,14 +39,15 @@ with open(CONFIG_FILE, 'r') as f:
         try:
             default_receiver = app.config['FLOCK_CONFIG']['default']['webhook_link']
             default_format = app.config['FLOCK_CONFIG']['default']['alert_format']
-            if default_format.find('{{description}}') == -1:
+            if default_format.find('!{description}}') == -1:
+                logging.error('Alert format requires the following field: "!\{description\}"')
                 raise ImportError
 
         except:
-            raise ImportError('Bad flock config')
-    except Exception as exc:
-        print(exc)
-        exit(254)
+            logging.error('Bad flock config')
+            raise
+    except:
+        raise
 
 logger = logging.getLogger('main_logger')
 logger.setLevel(logging.DEBUG)
@@ -147,8 +149,7 @@ def main():
                     return 'Flock request timed out', 503
 
             except Exception as e:
-                logger.debug('Bad request')
-                logger.error(e)
+                logger.exception('Bad request')
                 logger.debug(json.dumps(alert))
                 raise
     except Exception as e:
@@ -177,11 +178,11 @@ def reload():
             # Test existance of flock config
             default_receiver = app.config['FLOCK_CONFIG']['default']['webhook_link']
             default_format = app.config['FLOCK_CONFIG']['default']['alert_format']
-            if default_format.find('{{description}}') == -1:
+            if default_format.find('!{description}}') == -1:
                 raise ImportError
             log_handler.setLevel(app.config['LOGGER_VERBOSITY'])
         except Exception as exc:
-            logger.error(exc)
+            logger.exception('Error while loading config')
             # Rollback
             app.config['LOGGER_VERBOSITY'] = old_config['LOGGER_VERBOSITY']
             app.config['FLOCK_CONFIG'] = old_config['FLOCK_CONFIG']
