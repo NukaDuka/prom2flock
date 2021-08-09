@@ -102,6 +102,8 @@ def main():
                 # TODO: Add more request-specific configuration options here
 
                 receivers_raw = annotations.get('receiver')
+                logger.debug(receivers_raw)
+                logger.debug(type(receivers_raw))
                 try:
                     receivers = receivers_raw.split(',').strip()
                 except:
