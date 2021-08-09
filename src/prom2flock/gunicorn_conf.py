@@ -24,7 +24,6 @@ try:
     with open(CONFIG_FILE, 'r') as f:
         config_file = yaml.safe_load(f)
         bind = config_file['server']['host'] + ':' + str(config_file['server']['port'])
-        reload = config_file['server']['debug']
         port = config_file['server']['port']
         workers = config_file['server']['workers']
         loglevel = config_file['server']['logging']['verbosity']
