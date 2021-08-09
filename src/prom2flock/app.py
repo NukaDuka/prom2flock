@@ -102,10 +102,10 @@ def main():
                 # TODO: Add more request-specific configuration options here
 
                 receivers_raw = annotations.get('receiver')
-                if receivers_raw is not str:
-                    receivers = [default_receiver]
-                else:
+                try:
                     receivers = receivers_raw.split(',').strip()
+                except:
+                    receivers = ["__default_receiver__"]
 
                 description = annotations['description']
                 format = annotations.get('alert_format', default_alert_format)
