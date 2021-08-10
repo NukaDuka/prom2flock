@@ -22,6 +22,7 @@ if not os.path.isfile(CONFIG_FILE):
 
 # Load initial configuration
 with open(CONFIG_FILE, 'r') as f:
+    logging.basicConfig(format='%(asctime)s [%(funcName)s (%(name)s)]  %(levelname)s: %(message)s', level=logging.DEBUG)
     try:
         config = yaml.safe_load(f)
         app.config['SERVER_PORT'] = config['server']['port']
@@ -38,14 +39,15 @@ with open(CONFIG_FILE, 'r') as f:
         try:
             default_receiver = app.config['FLOCK_CONFIG']['default']['webhook_link']
             default_format = app.config['FLOCK_CONFIG']['default']['alert_format']
-            if default_format.find('{{description}}') == -1:
+            if default_format.find('!{description}') == -1:
+                logging.error('Alert format requires the following field: "!{description}"')
                 raise ImportError
 
         except:
-            raise ImportError('Bad flock config')
-    except Exception as exc:
-        print(exc)
-        exit(254)
+            logging.error('Bad flock config')
+            raise
+    except:
+        raise
 
 logger = logging.getLogger('main_logger')
 logger.setLevel(logging.DEBUG)
@@ -94,9 +96,18 @@ def main():
                 default_alert_format = app.config['FLOCK_CONFIG']['default']['alert_format']
                 default_resolve_format = app.config['FLOCK_CONFIG']['default']['resolve_format']
 
+                default_receiver = app.config['FLOCK_CONFIG']['default']['webhook_link']
+
                 # Receiver info should be a string in the 'annotations' field
                 # TODO: Add more request-specific configuration options here
-                receiver = annotations.get('receiver')
+
+                receivers_raw = annotations.get('receiver')
+                logger.debug("Receivers: " + receivers_raw)
+                try:
+                    receivers = [x.strip() for x in receivers_raw.split(',')]
+                except:
+                    receivers = ["__default_receiver__"]
+
                 description = annotations['description']
                 format = annotations.get('alert_format', default_alert_format)
 
@@ -128,27 +139,35 @@ def main():
                 payload_json = {}
                 payload_json['flockml'] = alert_message
                 logger.debug(json.dumps(payload_json))
-                url = app.config['FLOCK_CONFIG']['webhooks'].get(receiver, 'empty')
-                if url == 'empty':
-                    if receiver is None:
-                        receiver = '[none]'
-                    logger.debug('Receiver "' + receiver + '" does not exist!')
-                    url = app.config['FLOCK_CONFIG']['default']['webhook_link']
+                # This flag prevents prom2flock from sending the alert to the default channel multiple times when a receiver is not found
+                sent_to_default = False
+                for receiver in receivers:
+                    receiver_missing = False
+                    url = app.config['FLOCK_CONFIG']['webhooks'].get(receiver, 'empty')
+                    if url == 'empty':
+                        if sent_to_default:
+                            continue # An alert was already sent to the default receiver
+                        if receiver is None:
+                            receiver = '[none]'
+                        logger.debug('Receiver "' + receiver + '" does not exist!')
+                        url = default_receiver
+                        receiver_missing = True
 
-                i = 0
-                while i < app.config['RETRIES']:
-                    r = requests.post(url, data=json.dumps(payload_json), timeout=app.config['TIMEOUT'])
-                    logger.debug(r.status_code)
-                    if r.status_code == 200:
-                        break
-                    i = i+1
-                if i == app.config['RETRIES']:
-                    logger.warning('Flock may be down or endpoint may be invalid. Receiver: ' + receiver)
-                    return 'Flock request timed out', 503
+                    i = 0
+                    while i < app.config['RETRIES']:
+                        r = requests.post(url, data=json.dumps(payload_json), timeout=app.config['TIMEOUT'])
+                        logger.debug(r.status_code)
+                        if r.status_code == 200:
+                            if receiver_missing:
+                                sent_to_default = True
+                            break
+                        i = i+1
+                    if i == app.config['RETRIES']:
+                        logger.warning('Flock may be down or endpoint may be invalid. Receiver: ' + receiver)
+                        return 'Flock request timed out', 503
 
             except Exception as e:
-                logger.debug('Bad request')
-                logger.error(e)
+                logger.exception('Bad request')
                 logger.debug(json.dumps(alert))
                 raise
     except Exception as e:
@@ -177,11 +196,11 @@ def reload():
             # Test existance of flock config
             default_receiver = app.config['FLOCK_CONFIG']['default']['webhook_link']
             default_format = app.config['FLOCK_CONFIG']['default']['alert_format']
-            if default_format.find('{{description}}') == -1:
+            if default_format.find('!{description}') == -1:
                 raise ImportError
             log_handler.setLevel(app.config['LOGGER_VERBOSITY'])
         except Exception as exc:
-            logger.error(exc)
+            logger.exception('Error while loading config')
             # Rollback
             app.config['LOGGER_VERBOSITY'] = old_config['LOGGER_VERBOSITY']
             app.config['FLOCK_CONFIG'] = old_config['FLOCK_CONFIG']

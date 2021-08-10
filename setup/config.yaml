@@ -3,7 +3,6 @@
 server:
   port: 5009
   host: 0.0.0.0
-  debug: true
   logging:
     logger_retention_time: 30
     error_logger_retention_time: 30
@@ -11,6 +10,7 @@ server:
     verbosity: DEBUG
   timeout: 10
   retries: 3
+  workers: 2
 
 flock:
     default:
@@ -19,4 +19,4 @@ flock:
       resolve_format: "<b>[RESOLVED] [{{alertname}}]</b>"
     webhooks: # Add webhook links here as needed
       # Format:
-      # webhook_name: webhook_link  
+      # webhook_name: webhook_link
