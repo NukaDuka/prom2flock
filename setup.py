@@ -17,9 +17,9 @@ setup(
         ]
     },
     install_requires = [
-        "Flask~=2.0",
+        "Flask~=2.1",
         "gunicorn~=20.1",
-        "requests~=2.26",
-        "PyYAML~=5.4",
+        "requests~=2.28",
+        "PyYAML~=6.0",
     ]
 )
